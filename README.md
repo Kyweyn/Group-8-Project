@@ -12,6 +12,8 @@ Room Price
 
 Roles/tasks Breakdown:
 Kyle Wayne Darjuan
+Create a shared github repository
+Create a Jira Kanban board
 Designing and Implementing the Login/Signup
 Developing the user dashboard view to track and display the reservation details.
 
@@ -20,5 +22,6 @@ Creating the search bar filtering by date of check-in and checkout.
 Developing the frontend room listing page for hotel booking system
 
 Daiju Saji
+basic typescript node.js project setup
 Creating a room listing page that displays the room types and room prices
 -->
