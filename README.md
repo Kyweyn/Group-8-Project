@@ -9,6 +9,7 @@ View Reservation Details
 Date of check in and checkout
 Room Types
 Room Price
+Payment & Info
 
 Roles/tasks Breakdown:
 Kyle Wayne Darjuan
