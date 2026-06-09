@@ -1,0 +1,102 @@
+API ROUTES PLAN
+===============
+
+Made by: Shiv Alpeshbhai Patel
+Backend: TypeScript + Express.js, database MySQL (mysql2 library)
+
+The backend is a REST API. The frontend and backend send everything as JSON.
+
+
+ROUTES
+------
+  GET     /hotels                                       list of all hotels
+  GET     /hotels/:id                                   one hotel with its rooms
+  GET     /search?city=&checkin=&checkout=&guests=      search hotels by city, dates and guests
+  GET     /rooms/:id                                    details of one room type
+  POST    /bookings                                     create a new booking
+  GET     /users/:userId/bookings                       all bookings of one user
+  GET     /bookings/:id                                 one booking
+  PUT     /bookings/:id                                 change the dates of a booking
+  DELETE  /bookings/:id                                 cancel a booking
+
+
+DESCRIPTION OF EACH ROUTE
+-------------------------
+1. GET /hotels - returns all hotels with name, city, stars and starting price.
+   Used by the Hotel Listing page.
+
+2. GET /hotels/:id - returns one hotel and a list of its room types.
+   Used by the Room Details page.
+
+3. GET /search - reads city, checkin, checkout and guests from the URL and only
+   returns hotels that still have a free room for those dates with enough space
+   for the guests. Used by the search on the Home page.
+
+4. GET /rooms/:id - returns one room type with the price and max guests.
+   The Booking Form uses this to show the price.
+
+5. POST /bookings - creates a booking. It checks the availability again inside a
+   database transaction and calculates the total price (price per night x number
+   of nights). If the room just got taken it returns an error (409).
+
+6. GET /users/:userId/bookings - returns all bookings of one user together with
+   the hotel and room names. Used by the My Bookings page.
+
+7. GET /bookings/:id - returns one booking. Used by the Edit Booking page.
+
+8. PUT /bookings/:id - changes the dates of a booking, checks the availability
+   for the new dates and recalculates the total price.
+
+9. DELETE /bookings/:id - cancels a booking. We don't delete the row, we just set
+   the status to 'cancelled', so the user can still see it in their history.
+
+Note: in Milestone 1 we had GET /bookings/:userId and GET /bookings/:bookingId.
+We changed this because both routes look the same to Express (it can't know if
+the number is a user id or a booking id). Now the user list is
+GET /users/:userId/bookings.
+
+
+JSON EXAMPLE
+------------
+Creating a booking:
+
+  POST /bookings
+  {
+    "userId": 12,
+    "roomId": 4,
+    "checkInDate": "2026-07-10",
+    "checkOutDate": "2026-07-13"
+  }
+
+Answer (201 Created):
+
+  {
+    "bookingId": 87,
+    "totalPrice": 447.00,
+    "status": "confirmed"
+  }
+
+Errors look like { "error": "Room not available for these dates" } with status
+400, 404 or 409.
+
+
+FOLDER STRUCTURE
+----------------
+  src/
+    server.ts        -> starts Express and loads the routes
+    db/pool.ts       -> connection to MySQL
+    routes/          -> one file per resource (hotels, rooms, search, bookings)
+    controllers/     -> the functions that handle the requests
+    models/          -> the SQL queries
+    middleware/      -> validation and error handling
+
+Every route calls one controller function. The controller checks the input,
+calls the model (which runs the SQL) and sends back the JSON.
+
+
+HOW THE FRONTEND TALKS TO THE BACKEND
+-------------------------------------
+The HTML pages use fetch() in JavaScript to call these routes. For example the
+My Bookings page calls GET /users/12/bookings and creates a card for every
+booking in the answer. Forms send POST or PUT requests with a JSON body. In this
+milestone we only plan this, the real connection is built in Milestone 3.
