@@ -1,0 +1,46 @@
+<mxfile host="app.diagrams.net" type="device">
+  <diagram name="Page-1" id="hotel-booking-erd-1">
+    <mxGraphModel dx="1408" dy="748" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="tbl-hotels" value="&lt;div style=&quot;box-sizing:border-box;width:100%;background:#e4e4e4;padding:2px;&quot;&gt;hotels&lt;/div&gt;&lt;table style=&quot;width:100%;font-size:1em;&quot; cellpadding=&quot;2&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;PK&lt;/td&gt;&lt;td&gt;hotel_id INT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;name VARCHAR(150)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;city VARCHAR(100)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;address TEXT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;star_rating INT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;description TEXT&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12" parent="1" vertex="1">
+          <mxGeometry x="80" y="120" width="220" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tbl-rooms" value="&lt;div style=&quot;box-sizing:border-box;width:100%;background:#e4e4e4;padding:2px;&quot;&gt;rooms&lt;/div&gt;&lt;table style=&quot;width:100%;font-size:1em;&quot; cellpadding=&quot;2&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;PK&lt;/td&gt;&lt;td&gt;room_id INT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;FK1&lt;/td&gt;&lt;td&gt;hotel_id INT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;type VARCHAR(50)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;price_per_night NUMERIC(10,2)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;max_guests INT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;quantity_available INT&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12" parent="1" vertex="1">
+          <mxGeometry x="400" y="120" width="220" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tbl-bookings" value="&lt;div style=&quot;box-sizing:border-box;width:100%;background:#e4e4e4;padding:2px;&quot;&gt;bookings&lt;/div&gt;&lt;table style=&quot;width:100%;font-size:1em;&quot; cellpadding=&quot;2&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;PK&lt;/td&gt;&lt;td&gt;booking_id INT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;FK1&lt;/td&gt;&lt;td&gt;user_id INT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;FK2&lt;/td&gt;&lt;td&gt;room_id INT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;check_in_date DATE&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;check_out_date DATE&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;total_price NUMERIC(10,2)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;status VARCHAR(20)&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12" parent="1" vertex="1">
+          <mxGeometry x="720" y="120" width="220" height="170" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tbl-users" value="&lt;div style=&quot;box-sizing:border-box;width:100%;background:#e4e4e4;padding:2px;&quot;&gt;users&lt;/div&gt;&lt;table style=&quot;width:100%;font-size:1em;&quot; cellpadding=&quot;2&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;PK&lt;/td&gt;&lt;td&gt;user_id INT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;name VARCHAR(100)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;email VARCHAR(255)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;phone VARCHAR(20)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;password VARCHAR(255)&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12" parent="1" vertex="1">
+          <mxGeometry x="720" y="440" width="220" height="130" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tbl-reviews" value="&lt;div style=&quot;box-sizing:border-box;width:100%;background:#e4e4e4;padding:2px;&quot;&gt;reviews&lt;/div&gt;&lt;table style=&quot;width:100%;font-size:1em;&quot; cellpadding=&quot;2&quot; cellspacing=&quot;0&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;PK&lt;/td&gt;&lt;td&gt;review_id INT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;FK1&lt;/td&gt;&lt;td&gt;user_id INT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;FK2&lt;/td&gt;&lt;td&gt;hotel_id INT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;rating INT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;comment TEXT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;date DATE&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;rounded=0;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12" parent="1" vertex="1">
+          <mxGeometry x="320" y="460" width="220" height="150" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rel-hotels-rooms" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=none;startArrow=ERmandOne;endArrow=ERoneToMany;fontFamily=Verdana;fontSize=12;align=left;" parent="1" source="tbl-hotels" target="tbl-rooms" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-rooms-bookings" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;labelBackgroundColor=none;startArrow=ERmandOne;endArrow=ERoneToMany;fontFamily=Verdana;fontSize=12;align=left;" parent="1" source="tbl-rooms" target="tbl-bookings" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-users-bookings" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=0;entryX=0.5;entryY=1;labelBackgroundColor=none;startArrow=ERmandOne;endArrow=ERoneToMany;fontFamily=Verdana;fontSize=12;align=left;" parent="1" source="tbl-users" target="tbl-bookings" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-users-reviews" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0;exitY=0.5;entryX=1;entryY=0.5;dashed=1;labelBackgroundColor=none;startArrow=ERmandOne;endArrow=ERoneToMany;fontFamily=Verdana;fontSize=12;align=left;" parent="1" source="tbl-users" target="tbl-reviews" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-hotels-reviews" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;entryX=0;entryY=0.5;dashed=1;labelBackgroundColor=none;startArrow=ERmandOne;endArrow=ERoneToMany;fontFamily=Verdana;fontSize=12;align=left;" parent="1" source="tbl-hotels" target="tbl-reviews" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,78 @@
+DATABASE DESIGN
+===============
+
+Database: MySQL
+Made by: Kyle Wayne Darjuan
+
+We have 4 main tables and 1 optional table (reviews). The ERD is in
+hotel_booking.drawio.png in this folder (made with draw.io, the source file
+is hotel_booking.drawio).
+
+
+WHY MYSQL
+---------
+Our data is relational (users, hotels, rooms, bookings are all connected),
+and we need the database to stop double bookings. With the InnoDB engine,
+foreign keys make sure a booking always points to a real user and room, and
+transactions let us check availability and insert the booking in one step.
+CHECK constraints (MySQL 8) handle rules like check_out_date > check_in_date.
+The mysql2 library also works well with our TypeScript + Express backend, and
+MySQL is free and easy to set up.
+
+
+TABLE: users  (stores the customer accounts)
+  user_id     INT AUTO_INCREMENT, PRIMARY KEY    - id of the user
+  name        VARCHAR(100), NOT NULL             - full name
+  email       VARCHAR(255), UNIQUE, NOT NULL      - email, used for login
+  phone       VARCHAR(20)                         - phone number
+  password    VARCHAR(255), NOT NULL              - password (saved hashed, not plain text)
+  Relationships: one user can have many bookings and many reviews.
+
+
+TABLE: hotels  (stores the hotels)
+  hotel_id      INT AUTO_INCREMENT, PRIMARY KEY   - id of the hotel
+  name          VARCHAR(150), NOT NULL            - hotel name
+  city          VARCHAR(100), NOT NULL            - city, used for the search
+  address       TEXT, NOT NULL                    - address
+  star_rating   INTEGER, CHECK (1-5)              - stars from 1 to 5
+  description   TEXT                              - description text
+  Relationships: one hotel has many rooms and can have many reviews.
+
+
+TABLE: rooms  (stores the room types of each hotel)
+  room_id             INT AUTO_INCREMENT, PRIMARY KEY   - id of the room type
+  hotel_id            INTEGER, FK -> hotels             - which hotel it belongs to
+  type                VARCHAR(50), NOT NULL             - Single, Double, Suite etc.
+  price_per_night     NUMERIC(10,2), NOT NULL           - price for one night
+  max_guests          INTEGER, NOT NULL                 - how many guests fit
+  quantity_available  INTEGER, NOT NULL                 - how many rooms of this type exist
+  Relationships: belongs to one hotel, one room type can be in many bookings.
+
+
+TABLE: bookings  (stores the reservations)
+  booking_id      INT AUTO_INCREMENT, PRIMARY KEY        - id of the booking
+  user_id         INTEGER, FK -> users                   - who booked
+  room_id         INTEGER, FK -> rooms                   - which room
+  check_in_date   DATE, NOT NULL                         - arrival
+  check_out_date  DATE, CHECK (> check_in_date)          - departure
+  total_price     NUMERIC(10,2), NOT NULL                - price per night x number of nights
+  status          VARCHAR(20), DEFAULT 'confirmed'       - confirmed, cancelled or completed
+  Relationships: belongs to one user and one room.
+
+
+TABLE: reviews  (optional - stores ratings and comments from guests)
+  review_id   INT AUTO_INCREMENT, PRIMARY KEY    - id of the review
+  user_id     INTEGER, FK -> users               - who wrote it
+  hotel_id    INTEGER, FK -> hotels              - which hotel it is about
+  rating      INTEGER, CHECK (1-5)               - score from 1 to 5
+  comment     TEXT                              - the comment
+  date        DATE, DEFAULT (CURRENT_DATE)       - when it was written
+  Relationships: belongs to one user and one hotel.
+
+
+RELATIONSHIPS SUMMARY
+---------------------
+- One hotel has many rooms, a room belongs to one hotel
+- One user can have many bookings
+- A booking belongs to one user and one room
+- One user can write many reviews, one hotel can have many reviews
