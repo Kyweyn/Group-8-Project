@@ -1,0 +1,62 @@
+WIREFRAMES
+==========
+
+Made by: Daiju Saji
+
+Our app has 6 pages. This covers the required minimum: Home Page, Data Entry
+Page (Booking Form), Data Listing Pages (Hotel Listing and My Bookings) and
+Edit/Update Page (Edit Booking).
+
+The wireframe images are in this folder (made in Figma). They show the full
+pages so they are long.
+
+
+1. HOME  (Home - Academic Hospitality.png)
+The first page. Navigation bar on top (logo, Home, My Bookings). In the middle
+there is the search: city field, check-in and check-out date pickers, number of
+guests dropdown and a Search button.
+
+2. HOTEL LISTING  (Hotels in Kitchener - Academic Hospitality.png) - data listing
+Shows the search results. On the left there are filters (stars, price range).
+Every hotel is a card with the name, city, star rating, price from and a
+"View Rooms" button.
+
+3. ROOM DETAILS  (Room Details - Academic Hospitality.png)
+Shows one hotel and its rooms. On top the hotel info (name, address, stars,
+description), below one row for every room type with the price per night, max
+guests and a "Book Now" button.
+
+4. BOOKING FORM  (Confirm Booking - Academic Hospitality.png) - data entry
+Here the user confirms the booking. On the left the form with name, email,
+phone and the dates. On the right a small summary with the hotel, room, price
+per night, number of nights and the total price, and the "Confirm Booking"
+button.
+
+5. MY BOOKINGS  (My Bookings - Academic Hospitality.png) - data listing
+A list of all bookings of the user. Every booking is a card with the hotel name,
+room type, dates, total price, status (Confirmed green / Cancelled gray) and
+Edit and Cancel buttons. If there are no bookings we show a message like
+"No trips yet".
+
+6. EDIT BOOKING  (Edit Booking - Academic Hospitality.png) - edit/update
+Here the user can change a booking. On top the current booking info, below date
+pickers to pick new dates, the new total price, an "Update Booking" button and a
+red "Cancel Booking" button that asks "are you sure" first.
+
+
+NAVIGATION
+----------
+Home -> Hotel Listing -> Room Details -> Booking Form -> My Bookings <-> Edit Booking
+
+The navigation bar is the same on every page so the user can always go back to
+Home or My Bookings.
+
+
+DESIGN CHOICES
+--------------
+- Every page has one main button (Search, View Rooms, Book Now, Confirm) so it's
+  clear what to do next
+- The total price is always shown before the user confirms, so there are no
+  surprises
+- The status of a booking has a color so you can see it quickly
+- We use cards for lists because they are easier to read than plain tables
