@@ -1,14 +1,14 @@
 {
-  "name": "inclass-part1-shivpatel",
+  "name": "hotel-booking-backend",
   "version": "1.0.0",
-  "description": "Week 6 in-class tutorial - Express + TypeScript + MySQL with routes folder",
+  "description": "Milestone 3 - Hotel Booking REST API (Express + TypeScript + MySQL)",
   "main": "src/index.ts",
   "scripts": {
     "dev": "nodemon src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js"
   },
-  "author": "Shiv Patel",
+  "author": "Hotel Booking Team",
   "license": "ISC",
   "dependencies": {
     "express": "^4.19.2",
