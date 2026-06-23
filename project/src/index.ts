@@ -3,6 +3,9 @@
 // No route logic (no SQL queries) lives here.
 
 import express from "express";
+import hotelRoutes from "./routes/hotelRoutes";
+import roomRoutes from "./routes/roomRoutes";
+import bookingRoutes from "./routes/bookingRoutes";
 
 const app = express();
 const PORT = 3001;
@@ -12,14 +15,14 @@ app.use(express.json());
 
 // simple health check so we know the server is alive
 app.get("/", (req, res) => {
-  res.send("Hotel Booking API is running! Route files are added in the next steps.");
+  res.send("Hotel Booking API is running! Try /hotels, /rooms or /bookings");
 });
 
-// ── ROUTE FILES GET REGISTERED HERE AS WE BUILD THEM ──────────────
+// ── REGISTER ROUTES ───────────────────────────────────────────────
 // pattern: app.use(prefix, router)
-// app.use("/hotels", hotelRoutes);
-// app.use("/rooms", roomRoutes);
-// app.use("/bookings", bookingRoutes);
+app.use("/hotels", hotelRoutes);
+app.use("/rooms", roomRoutes);
+app.use("/bookings", bookingRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
