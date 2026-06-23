@@ -1,22 +1,25 @@
-// index.ts - main entry point for the app
+// index.ts - entry point for the Hotel Booking API
+// This file only sets up middleware and registers the route files.
+// No route logic (no SQL queries) lives here.
+
 import express from "express";
-import usersRouter from "./routes/users";
-import productsRouter from "./routes/products";
 
 const app = express();
 const PORT = 3001;
 
+// express.json() lets us read JSON bodies from POST/PUT requests (req.body)
 app.use(express.json());
 
-// quick home route so I know the server is alive
+// simple health check so we know the server is alive
 app.get("/", (req, res) => {
-  res.send("Server is running! Try /users or /products");
+  res.send("Hotel Booking API is running! Route files are added in the next steps.");
 });
 
-// register my route files here
+// ── ROUTE FILES GET REGISTERED HERE AS WE BUILD THEM ──────────────
 // pattern: app.use(prefix, router)
-app.use("/users", usersRouter);
-app.use("/products", productsRouter);
+// app.use("/hotels", hotelRoutes);
+// app.use("/rooms", roomRoutes);
+// app.use("/bookings", bookingRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);

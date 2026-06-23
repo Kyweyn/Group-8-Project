@@ -1,18 +1,23 @@
-// db.ts - database connection for my Express project
-// Using mysql2 so I can use a connection pool
+// db.ts - shared database connection for the Hotel Booking API
+// We use the mysql2 library with a connection pool so that every route file
+// can run async queries against the same connection. This is the single
+// source of truth for the database connection - if the credentials change,
+// we only edit this one file.
 
 import mysql from "mysql2";
 
-// connection pool (better than a single connection for an API)
+// A pool keeps several connections open and reuses them, which is better for
+// an API than opening a brand new connection for every request.
 const pool = mysql.createPool({
   host: "localhost",
   user: "root",
-  password: "Shiv@9510",
-  database: "inclass_part1",
+  password: "Edgeis10", // change this to your own MySQL password
+  database: "hotel_booking",
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
 });
 
-// export the promise version so I can use async/await in my routes
+// Export the promise version so we can use async/await in the route files:
+//   import { db } from "../db";
 export const db = pool.promise();

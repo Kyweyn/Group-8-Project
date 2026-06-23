@@ -1,0 +1,136 @@
+// setup-db.js - one-time script to create the database, all tables and sample data.
+// Run with:  node setup-db.js
+// (You can also just run database/schema.sql in MySQL Workbench instead.)
+
+const mysql = require("mysql2/promise");
+
+async function main() {
+  // connect WITHOUT selecting a database first so we can create it
+  const conn = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "Edgeis10", // change this to your own MySQL password
+  });
+
+  await conn.query("CREATE DATABASE IF NOT EXISTS hotel_booking");
+  await conn.query("USE hotel_booking");
+
+  // ---- tables ----
+  await conn.query(`
+    CREATE TABLE IF NOT EXISTS users (
+      user_id   INT AUTO_INCREMENT PRIMARY KEY,
+      name      VARCHAR(100) NOT NULL,
+      email     VARCHAR(255) NOT NULL UNIQUE,
+      phone     VARCHAR(20),
+      password  VARCHAR(255) NOT NULL
+    ) ENGINE=InnoDB
+  `);
+
+  await conn.query(`
+    CREATE TABLE IF NOT EXISTS hotels (
+      hotel_id     INT AUTO_INCREMENT PRIMARY KEY,
+      name         VARCHAR(150) NOT NULL,
+      city         VARCHAR(100) NOT NULL,
+      address      TEXT NOT NULL,
+      star_rating  INT CHECK (star_rating BETWEEN 1 AND 5),
+      description  TEXT
+    ) ENGINE=InnoDB
+  `);
+
+  await conn.query(`
+    CREATE TABLE IF NOT EXISTS rooms (
+      room_id             INT AUTO_INCREMENT PRIMARY KEY,
+      hotel_id            INT NOT NULL,
+      type                VARCHAR(50) NOT NULL,
+      price_per_night     DECIMAL(10,2) NOT NULL,
+      max_guests          INT NOT NULL,
+      quantity_available  INT NOT NULL,
+      FOREIGN KEY (hotel_id) REFERENCES hotels(hotel_id)
+    ) ENGINE=InnoDB
+  `);
+
+  await conn.query(`
+    CREATE TABLE IF NOT EXISTS bookings (
+      booking_id      INT AUTO_INCREMENT PRIMARY KEY,
+      user_id         INT NOT NULL,
+      room_id         INT NOT NULL,
+      check_in_date   DATE NOT NULL,
+      check_out_date  DATE NOT NULL,
+      total_price     DECIMAL(10,2) NOT NULL,
+      status          VARCHAR(20) NOT NULL DEFAULT 'confirmed',
+      FOREIGN KEY (user_id) REFERENCES users(user_id),
+      FOREIGN KEY (room_id) REFERENCES rooms(room_id),
+      CHECK (check_out_date > check_in_date)
+    ) ENGINE=InnoDB
+  `);
+
+  await conn.query(`
+    CREATE TABLE IF NOT EXISTS reviews (
+      review_id  INT AUTO_INCREMENT PRIMARY KEY,
+      user_id    INT NOT NULL,
+      hotel_id   INT NOT NULL,
+      rating     INT CHECK (rating BETWEEN 1 AND 5),
+      comment    TEXT,
+      date       DATE DEFAULT (CURRENT_DATE),
+      FOREIGN KEY (user_id) REFERENCES users(user_id),
+      FOREIGN KEY (hotel_id) REFERENCES hotels(hotel_id)
+    ) ENGINE=InnoDB
+  `);
+
+  // ---- sample data (only if the tables are empty, so it is safe to re-run) ----
+  const [u] = await conn.query("SELECT COUNT(*) AS c FROM users");
+  if (u[0].c === 0) {
+    await conn.query(
+      "INSERT INTO users (name, email, phone, password) VALUES ?",
+      [[
+        ["Shiv Patel", "shiv@example.com", "519-555-0101", "hashed_pw_1"],
+        ["Daiju Saji", "daiju@example.com", "519-555-0102", "hashed_pw_2"],
+      ]]
+    );
+
+    await conn.query(
+      "INSERT INTO hotels (name, city, address, star_rating, description) VALUES ?",
+      [[
+        ["Grand Conestoga Hotel", "Kitchener", "123 King St W, Kitchener, ON", 4, "Modern hotel in downtown Kitchener."],
+        ["Waterloo Inn", "Waterloo", "45 University Ave, Waterloo, ON", 3, "Cozy inn close to the universities."],
+        ["Cambridge Riverside", "Cambridge", "78 Water St, Cambridge, ON", 5, "Luxury rooms by the Grand River."],
+      ]]
+    );
+
+    await conn.query(
+      "INSERT INTO rooms (hotel_id, type, price_per_night, max_guests, quantity_available) VALUES ?",
+      [[
+        [1, "Single", 89.0, 1, 5],
+        [1, "Double", 129.0, 2, 4],
+        [1, "Suite", 199.0, 4, 2],
+        [2, "Single", 75.0, 1, 6],
+        [2, "Double", 110.0, 2, 3],
+        [3, "Suite", 249.0, 4, 2],
+      ]]
+    );
+
+    await conn.query(
+      "INSERT INTO bookings (user_id, room_id, check_in_date, check_out_date, total_price, status) VALUES ?",
+      [[
+        [1, 2, "2026-07-01", "2026-07-04", 387.0, "confirmed"],
+        [2, 4, "2026-08-10", "2026-08-12", 150.0, "confirmed"],
+      ]]
+    );
+
+    await conn.query(
+      "INSERT INTO reviews (user_id, hotel_id, rating, comment) VALUES ?",
+      [[
+        [1, 1, 5, "Great stay, clean rooms and friendly staff."],
+        [2, 3, 4, "Beautiful view of the river."],
+      ]]
+    );
+  }
+
+  console.log("Database 'hotel_booking' is ready with all tables and sample data.");
+  await conn.end();
+}
+
+main().catch((err) => {
+  console.error("Setup failed:", err.message);
+  process.exit(1);
+});
