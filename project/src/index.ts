@@ -6,6 +6,8 @@ import express from "express";
 import hotelRoutes from "./routes/hotelRoutes";
 import roomRoutes from "./routes/roomRoutes";
 import bookingRoutes from "./routes/bookingRoutes";
+import userRoutes from "./routes/userRoutes";
+import reviewRoutes from "./routes/reviewRoutes";
 
 const app = express();
 const PORT = 3001;
@@ -15,14 +17,16 @@ app.use(express.json());
 
 // simple health check so we know the server is alive
 app.get("/", (req, res) => {
-  res.send("Hotel Booking API is running! Try /hotels, /rooms or /bookings");
+  res.send("Hotel Booking API is running! Try /hotels, /rooms, /bookings, /users or /reviews");
 });
 
 // ── REGISTER ROUTES ───────────────────────────────────────────────
-// pattern: app.use(prefix, router)
+// pattern: app.use(prefix, router) - one line per route file
 app.use("/hotels", hotelRoutes);
 app.use("/rooms", roomRoutes);
 app.use("/bookings", bookingRoutes);
+app.use("/users", userRoutes);
+app.use("/reviews", reviewRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
