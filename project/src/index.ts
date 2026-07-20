@@ -20,8 +20,8 @@ app.get("/", (req, res) => {
   res.send("Hotel Booking API is running! Try /hotels, /rooms, /bookings, /users or /reviews");
 });
 
-// ── REGISTER ROUTES ───────────────────────────────────────────────
-// pattern: app.use(prefix, router) - one line per route file
+// register the routes - one line per route file
+// pattern: app.use(prefix, router)
 app.use("/hotels", hotelRoutes);
 app.use("/rooms", roomRoutes);
 app.use("/bookings", bookingRoutes);

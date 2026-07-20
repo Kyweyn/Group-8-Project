@@ -11,7 +11,7 @@ import mysql from "mysql2";
 const pool = mysql.createPool({
   host: "localhost",
   user: "root",
-  password: "Shiv@9510",
+  password: "Edgeis10", // change this to your own MySQL password
   database: "hotel_booking",
   waitForConnections: true,
   connectionLimit: 10,
