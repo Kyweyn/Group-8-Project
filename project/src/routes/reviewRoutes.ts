@@ -1,4 +1,6 @@
 // reviewRoutes.ts - all endpoints for /reviews
+// GET and POST are from Milestone 3. The DELETE at the bottom is the Milestone 4
+// work (added by Shiv). Every query is parameterized with ?.
 import { Router, Request, Response } from "express";
 import { db } from "../db";
 
@@ -37,6 +39,26 @@ router.post("/", async (req: Request, res: Response) => {
   } catch (err) {
     console.log("POST /reviews failed:", err);
     res.status(500).json({ error: "Could not create review" });
+  }
+});
+
+// ---- Milestone 4: delete a review (added by Shiv) ----
+
+// DELETE /reviews/:id - remove a review by id
+router.delete("/:id", async (req: Request, res: Response) => {
+  try {
+    const [result]: any = await db.query(
+      "DELETE FROM reviews WHERE review_id = ?",
+      [req.params.id]
+    );
+    if (result.affectedRows === 0) {
+      res.status(404).json({ error: "Review not found" });
+      return;
+    }
+    res.json({ message: "Review deleted", reviewId: Number(req.params.id) });
+  } catch (err) {
+    console.log("DELETE /reviews/:id failed:", err);
+    res.status(500).json({ error: "Could not delete review" });
   }
 });
 

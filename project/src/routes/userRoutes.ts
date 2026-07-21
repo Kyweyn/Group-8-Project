@@ -1,4 +1,6 @@
 // userRoutes.ts - all endpoints for /users
+// GET and POST are from Milestone 3. The PUT / DELETE at the bottom are the
+// Milestone 4 work (added by Shiv). Every query is parameterized with ?.
 import { Router, Request, Response } from "express";
 import { db } from "../db";
 
@@ -51,6 +53,64 @@ router.get("/:userId/bookings", async (req: Request, res: Response) => {
   } catch (err) {
     console.log("GET /users/:userId/bookings failed:", err);
     res.status(500).json({ error: "Could not load bookings" });
+  }
+});
+
+// ---- Milestone 4: update / delete a user (added by Shiv) ----
+
+// PUT /users/:id - update a user's name, email and phone by id
+router.put("/:id", async (req: Request, res: Response) => {
+  const { name, email, phone } = req.body;
+  if (!name || !email) {
+    res.status(400).json({ error: "name and email are required" });
+    return;
+  }
+  try {
+    // check the user exists first so a missing id returns a clean 404
+    const [rows]: any = await db.query(
+      "SELECT user_id FROM users WHERE user_id = ?",
+      [req.params.id]
+    );
+    if (rows.length === 0) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+    await db.query(
+      "UPDATE users SET name = ?, email = ?, phone = ? WHERE user_id = ?",
+      [name, email, phone || null, req.params.id]
+    );
+    res.json({ userId: Number(req.params.id), name, email });
+  } catch (err: any) {
+    // errno 1062 = the email is already used by another user (UNIQUE column)
+    if (err && err.errno === 1062) {
+      res.status(409).json({ error: "That email is already in use" });
+      return;
+    }
+    console.log("PUT /users/:id failed:", err);
+    res.status(500).json({ error: "Could not update user" });
+  }
+});
+
+// DELETE /users/:id - remove a user by id
+router.delete("/:id", async (req: Request, res: Response) => {
+  try {
+    const [result]: any = await db.query(
+      "DELETE FROM users WHERE user_id = ?",
+      [req.params.id]
+    );
+    if (result.affectedRows === 0) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+    res.json({ message: "User deleted", userId: Number(req.params.id) });
+  } catch (err: any) {
+    // errno 1451 = the user still has bookings or reviews (foreign key)
+    if (err && err.errno === 1451) {
+      res.status(409).json({ error: "Cannot delete user: they still have bookings or reviews" });
+      return;
+    }
+    console.log("DELETE /users/:id failed:", err);
+    res.status(500).json({ error: "Could not delete user" });
   }
 });
 

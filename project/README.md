@@ -1,33 +1,41 @@
-# Hotel Booking Backend API
+# Hotel Booking Backend API - Milestone 4
 
-Milestone 3 backend for our mini-capstone **Hotel Booking Website**. It is a REST API built with
-**TypeScript + Express + MySQL** (the `mysql2` library). No frontend, this milestone is only the API.
+Milestone 4 of our mini-capstone **Hotel Booking Website**. It extends the Milestone 3 REST API so it
+now supports the full set of HTTP methods: the GET routes from Milestone 3 plus **POST, PUT and
+DELETE** to create, update and delete records. Built with **TypeScript + Express + MySQL** (the
+`mysql2` library).
 
-## Team
+## Team (who wrote which Milestone 4 endpoints)
 
-- **Kyle Wayne Darjuan** - database design + project setup
-- **Shiv Alpeshbhai Patel** - hotel, room and booking routes
-- **Daiju Saji** - user and review routes + documentation
+Each member added at least 3 write endpoints and can explain the SQL, the route handler and how it
+was tested.
+
+- **Daiju Saji** - Hotels: `POST /hotels`, `PUT /hotels/:id`, `DELETE /hotels/:id`
+- **Kyle Wayne Darjuan** - Rooms: `POST /rooms`, `PUT /rooms/:id`, `DELETE /rooms/:id`
+- **Shiv Alpeshbhai Patel** - Users and Reviews: `PUT /users/:id`, `DELETE /users/:id`, `DELETE /reviews/:id`
+
+(The booking write routes `POST /bookings`, `PUT /bookings/:id`, `DELETE /bookings/:id` were already
+built in Milestone 3.)
 
 ## Project structure
 
 ```
 hotel-booking-backend/
-├── package.json
-├── tsconfig.json
-├── nodemon.json
-├── setup-db.js              one-time script to create the DB + sample data
-├── database/
-│   └── schema.sql           CREATE DATABASE / CREATE TABLE statements
-└── src/
-    ├── index.ts             entry point - middleware + app.use() only
-    ├── db.ts                shared MySQL connection (imported by every route)
-    └── routes/              one file per table
-        ├── hotelRoutes.ts
-        ├── roomRoutes.ts
-        ├── bookingRoutes.ts
-        ├── userRoutes.ts
-        └── reviewRoutes.ts
+  package.json
+  tsconfig.json
+  nodemon.json
+  setup-db.js            one-time script to create the DB + sample data
+  database/
+    schema.sql           CREATE DATABASE / CREATE TABLE statements
+  src/
+    index.ts             entry point - middleware + app.use() only
+    db.ts                shared MySQL connection (imported by every route)
+    routes/              one file per table
+      hotelRoutes.ts
+      roomRoutes.ts
+      bookingRoutes.ts
+      userRoutes.ts
+      reviewRoutes.ts
 ```
 
 ## Setup
@@ -37,12 +45,11 @@ hotel-booking-backend/
    npm install
    ```
 
-2. **Create the database.** Make sure MySQL is running, then either run `database/schema.sql` in
-   MySQL Workbench, **or** run the helper script:
+2. **Create the database.** Make sure MySQL is running, then run `database/schema.sql` in MySQL
+   Workbench, **or** run:
    ```
    node setup-db.js
    ```
-   Both create the `hotel_booking` database, all 5 tables, and some sample rows.
 
    > If your MySQL password is not `Edgeis10`, change it in **`src/db.ts`** and **`setup-db.js`**.
 
@@ -52,7 +59,9 @@ hotel-booking-backend/
    ```
    You should see `Server running at http://localhost:3001`.
 
-## Endpoints
+## All endpoints
+
+GET routes (from Milestone 3):
 
 | Method | Route | What it does |
 |--------|-------|--------------|
@@ -63,44 +72,51 @@ hotel-booking-backend/
 | GET    | `/rooms/:id` | one room type |
 | GET    | `/bookings` | all bookings |
 | GET    | `/bookings/:id` | one booking |
-| POST   | `/bookings` | create a booking (checks availability in a transaction) |
-| PUT    | `/bookings/:id` | change the dates and recalculate the price |
-| DELETE | `/bookings/:id` | cancel a booking (sets status to `cancelled`) |
 | GET    | `/users` | all users |
-| POST   | `/users` | create a user |
-| GET    | `/users/:userId/bookings` | all bookings of one user (with hotel + room names) |
-| GET    | `/reviews` | all reviews (with user + hotel names) |
-| POST   | `/reviews` | add a review |
+| GET    | `/users/:userId/bookings` | all bookings of one user |
+| GET    | `/reviews` | all reviews |
 
-> Note: Milestone 2 listed the search as `/search`. We implemented it as `/hotels/search` so that
-> every route file maps to exactly one table and `index.ts` stays clean.
+Write routes (POST / PUT / DELETE):
 
-## Testing without a frontend
+| Method | Route | What it does | Author |
+|--------|-------|--------------|--------|
+| POST   | `/hotels` | create a hotel (201) | Daiju |
+| PUT    | `/hotels/:id` | update a hotel, 404 if missing | Daiju |
+| DELETE | `/hotels/:id` | delete a hotel, 404 if missing | Daiju |
+| POST   | `/rooms` | create a room (201) | Kyle |
+| PUT    | `/rooms/:id` | update a room, 404 if missing | Kyle |
+| DELETE | `/rooms/:id` | delete a room, 404 if missing | Kyle |
+| PUT    | `/users/:id` | update a user, 404 if missing | Shiv |
+| DELETE | `/users/:id` | delete a user, 404 if missing | Shiv |
+| DELETE | `/reviews/:id` | delete a review, 404 if missing | Shiv |
+| POST   | `/bookings` | create a booking (from Milestone 3) | - |
+| PUT    | `/bookings/:id` | update booking dates (from Milestone 3) | - |
+| DELETE | `/bookings/:id` | cancel a booking (from Milestone 3) | - |
+| POST   | `/users` | create a user (from Milestone 3) | - |
+| POST   | `/reviews` | create a review (from Milestone 3) | - |
 
-Open the URLs in your browser to test GET routes, e.g. `http://localhost:3001/hotels`.
+## Status codes we return
 
-For POST / PUT / DELETE use the terminal. On **Windows PowerShell**:
+| Code | When |
+|------|------|
+| 200 OK | a GET, PUT or DELETE worked |
+| 201 Created | a POST created a new record |
+| 400 Bad Request | a required field is missing or invalid |
+| 404 Not Found | no record with that id |
+| 409 Conflict | the record can't be deleted because another table points to it, or a unique field (email) is taken |
+| 500 Server Error | something unexpected went wrong |
 
-```powershell
-# Create a booking (returns 201 with the total price)
-Invoke-WebRequest -Method POST -Uri http://localhost:3001/bookings -ContentType "application/json" -Body '{"userId":1,"roomId":1,"checkInDate":"2026-07-10","checkOutDate":"2026-07-13"}'
+## Code quality notes
 
-# Add a user
-Invoke-WebRequest -Method POST -Uri http://localhost:3001/users -ContentType "application/json" -Body '{"name":"Alex","email":"alex@example.com","password":"secret"}'
+- **Parameterized SQL only.** Every query uses `?` placeholders with a values array (for example
+  `db.query("INSERT INTO hotels (...) VALUES (?, ?, ?)", [name, city, address])`). User input is
+  never concatenated into a SQL string, so SQL injection is not possible.
+- **One file per table.** Each resource has its own route file in `src/routes/`, kept from the clean
+  structure we set up in Milestone 3.
+- **Missing ids are handled.** PUT and DELETE check whether the row exists and return `404` if not,
+  instead of silently doing nothing.
 
-# Cancel a booking
-Invoke-WebRequest -Method DELETE -Uri http://localhost:3001/bookings/1
-```
+## Testing
 
-On **Mac / Linux** use `curl`:
-
-```bash
-curl -X POST http://localhost:3001/bookings -H "Content-Type: application/json" -d '{"userId":1,"roomId":1,"checkInDate":"2026-07-10","checkOutDate":"2026-07-13"}'
-```
-
-## How double booking is prevented
-
-`POST /bookings` runs inside a database transaction. It locks the room row, counts how many
-confirmed bookings already overlap the requested dates, and only inserts the new booking if a room
-of that type is still free. If not, it returns `409 Room not available for these dates`. This is the
-main problem we set out to solve in Milestone 2.
+See **`DEMO_TESTS.md`** for copy-paste PowerShell and curl commands that create a record, verify it,
+update it, verify it, then delete it and confirm it is gone - the exact flow used in the live demo.
