@@ -1,0 +1,19 @@
+/* styles.css - all our css is in this one file so it is easy to find.
+   We are not using a css framework, we wrote this ourselves. */
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f4f6f8;
+  color: #222;
+}
+
+.page {
+  max-width: 950px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 28px;
+}
