@@ -17,3 +17,65 @@ body {
 h1 {
   font-size: 28px;
 }
+
+/* ---------- navigation bar ---------- */
+
+.navbar {
+  background-color: #2b5d8a;
+  color: white;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar .logo {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  margin-left: 18px;
+  font-size: 15px;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- buttons ---------- */
+
+.button {
+  display: inline-block;
+  background-color: #2b5d8a;
+  color: white;
+  border: none;
+  padding: 9px 16px;
+  border-radius: 4px;
+  font-size: 15px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #24506f;
+}
+
+/* red button for delete / cancel */
+.button.red {
+  background-color: #b23b3b;
+}
+
+.button.red:hover {
+  background-color: #962f2f;
+}
+
+/* small grey button we use inside the cards */
+.button.small {
+  padding: 5px 10px;
+  font-size: 13px;
+}
