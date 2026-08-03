@@ -1,15 +1,23 @@
 // userRoutes.ts - all endpoints for /users
-// GET and POST are from Milestone 3. The PUT / DELETE at the bottom are the
-// Milestone 4 work (added by Shiv). Every query is parameterized with ?.
+// GET and POST are from Milestone 3. The PUT / DELETE are the Milestone 4 work
+// (added by Shiv). Every query is parameterized with ?.
+//
+// Milestone 5: POST /users now hashes the password with bcrypt before the
+// INSERT, so the database never contains a plain text password.
 import { Router, Request, Response } from "express";
+import bcrypt from "bcryptjs";
 import { db } from "../db";
 
 const router = Router();
 
+// bcrypt "salt rounds" - how much work hashing costs. 10 is the normal value:
+// high enough to be slow for an attacker, fast enough for our API.
+const SALT_ROUNDS = 10;
+
 // GET /users - all users (we never send the password back)
 router.get("/", async (req: Request, res: Response) => {
   try {
-    const [rows] = await db.query("SELECT user_id, name, email, phone FROM users");
+    const [rows] = await db.query("SELECT user_id, name, email, phone, role FROM users");
     res.json(rows);
   } catch (err) {
     console.log("GET /users failed:", err);
@@ -17,18 +25,28 @@ router.get("/", async (req: Request, res: Response) => {
   }
 });
 
-// POST /users - create a new user
+// POST /users - create a new user.
+// The password is hashed with bcrypt first, we never store what the user typed.
 router.post("/", async (req: Request, res: Response) => {
   const { name, email, phone, password } = req.body;
   if (!name || !email || !password) {
     res.status(400).json({ error: "name, email and password are required" });
     return;
   }
+  if (String(password).length < 8) {
+    res.status(400).json({ error: "password must be at least 8 characters" });
+    return;
+  }
   try {
+    // bcrypt.hash() gives back something like $2b$10$Nq8f... - the salt is
+    // stored inside the hash, so we do not need an extra column for it.
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
     const [result]: any = await db.query(
       "INSERT INTO users (name, email, phone, password) VALUES (?, ?, ?, ?)",
-      [name, email, phone || null, password]
+      [name, email, phone || null, hashedPassword]
     );
+    // we send back the id and the name, never the password or the hash
     res.status(201).json({ userId: result.insertId, name, email });
   } catch (err) {
     console.log("POST /users failed:", err);

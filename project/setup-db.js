@@ -3,6 +3,7 @@
 // (You can also just run database/schema.sql in MySQL Workbench instead.)
 
 const mysql = require("mysql2/promise");
+const bcrypt = require("bcryptjs");
 
 async function main() {
   // connect WITHOUT selecting a database first so we can create it
@@ -22,7 +23,8 @@ async function main() {
       name      VARCHAR(100) NOT NULL,
       email     VARCHAR(255) NOT NULL UNIQUE,
       phone     VARCHAR(20),
-      password  VARCHAR(255) NOT NULL
+      password  VARCHAR(255) NOT NULL,
+      role      VARCHAR(20)  NOT NULL DEFAULT 'user'
     ) ENGINE=InnoDB
   `);
 
@@ -80,11 +82,17 @@ async function main() {
   // ---- sample data (only if the tables are empty, so it is safe to re-run) ----
   const [u] = await conn.query("SELECT COUNT(*) AS c FROM users");
   if (u[0].c === 0) {
+    // Milestone 5: we hash the demo passwords with bcrypt before inserting them.
+    // Nothing plain text ever reaches the database.
+    const adminPassword = bcrypt.hashSync("Admin123", 10);
+    const demoPassword = bcrypt.hashSync("Password123", 10);
+
     await conn.query(
-      "INSERT INTO users (name, email, phone, password) VALUES ?",
+      "INSERT INTO users (name, email, phone, password, role) VALUES ?",
       [[
-        ["Shiv Patel", "shiv@example.com", "519-555-0101", "hashed_pw_1"],
-        ["Daiju Saji", "daiju@example.com", "519-555-0102", "hashed_pw_2"],
+        ["Admin User", "admin@example.com", "519-555-0100", adminPassword, "admin"],
+        ["Shiv Patel", "shiv@example.com", "519-555-0101", demoPassword, "user"],
+        ["Daiju Saji", "daiju@example.com", "519-555-0102", demoPassword, "user"],
       ]]
     );
 
@@ -109,24 +117,27 @@ async function main() {
       ]]
     );
 
+    // user_id 2 = Shiv, user_id 3 = Daiju (user_id 1 is the admin account)
     await conn.query(
       "INSERT INTO bookings (user_id, room_id, check_in_date, check_out_date, total_price, status) VALUES ?",
       [[
-        [1, 2, "2026-07-01", "2026-07-04", 387.0, "confirmed"],
-        [2, 4, "2026-08-10", "2026-08-12", 150.0, "confirmed"],
+        [2, 2, "2026-07-01", "2026-07-04", 387.0, "confirmed"],
+        [3, 4, "2026-08-10", "2026-08-12", 150.0, "confirmed"],
       ]]
     );
 
     await conn.query(
       "INSERT INTO reviews (user_id, hotel_id, rating, comment) VALUES ?",
       [[
-        [1, 1, 5, "Great stay, clean rooms and friendly staff."],
-        [2, 3, 4, "Beautiful view of the river."],
+        [2, 1, 5, "Great stay, clean rooms and friendly staff."],
+        [3, 3, 4, "Beautiful view of the river."],
       ]]
     );
   }
 
   console.log("Database 'hotel_booking' is ready with all tables and sample data.");
+  console.log("Demo logins:  admin@example.com / Admin123   (admin)");
+  console.log("              shiv@example.com  / Password123 (normal user)");
   await conn.end();
 }
 
