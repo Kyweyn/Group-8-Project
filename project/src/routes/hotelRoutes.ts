@@ -4,6 +4,7 @@
 // input can never be injected into the SQL.
 import { Router, Request, Response } from "express";
 import { db } from "../db";
+import { requireAuth, requireAdmin } from "../middleware/auth";
 
 const router = Router();
 
@@ -78,9 +79,12 @@ router.get("/:id", async (req: Request, res: Response) => {
 });
 
 // ---- Milestone 4: create / update / delete a hotel (added by Daiju) ----
+// Milestone 5: the three routes below now run requireAuth first (you need a
+// valid token) and then requireAdmin (your role must be 'admin'). The GET
+// routes above stay open because anyone should be able to browse hotels.
 
 // POST /hotels - add a new hotel. Returns 201 Created with the new id.
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", requireAuth, requireAdmin, async (req: Request, res: Response) => {
   const { name, city, address, starRating, description } = req.body;
 
   // the NOT NULL columns must be present
@@ -107,7 +111,7 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 // PUT /hotels/:id - update an existing hotel by id
-router.put("/:id", async (req: Request, res: Response) => {
+router.put("/:id", requireAuth, requireAdmin, async (req: Request, res: Response) => {
   const { name, city, address, starRating, description } = req.body;
   if (!name || !city || !address) {
     res.status(400).json({ error: "name, city and address are required" });
@@ -139,7 +143,7 @@ router.put("/:id", async (req: Request, res: Response) => {
 });
 
 // DELETE /hotels/:id - remove a hotel by id
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete("/:id", requireAuth, requireAdmin, async (req: Request, res: Response) => {
   try {
     const [result]: any = await db.query(
       "DELETE FROM hotels WHERE hotel_id = ?",

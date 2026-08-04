@@ -3,6 +3,7 @@
 // work (added by Shiv). Every query is parameterized with ?.
 import { Router, Request, Response } from "express";
 import { db } from "../db";
+import { requireAuth } from "../middleware/auth";
 
 const router = Router();
 
@@ -23,11 +24,19 @@ router.get("/", async (req: Request, res: Response) => {
   }
 });
 
-// POST /reviews - add a review for a hotel
-router.post("/", async (req: Request, res: Response) => {
-  const { userId, hotelId, rating, comment } = req.body;
-  if (!userId || !hotelId || !rating) {
-    res.status(400).json({ error: "userId, hotelId and rating are required" });
+// POST /reviews - add a review for a hotel. You must be logged in, and the
+// review is always saved under YOUR user id (taken from the token), so you
+// cannot post a review in somebody else's name.
+router.post("/", requireAuth, async (req: Request, res: Response) => {
+  const { hotelId, rating, comment } = req.body;
+  const userId = req.user!.userId;
+
+  if (!hotelId || !rating) {
+    res.status(400).json({ error: "hotelId and rating are required" });
+    return;
+  }
+  if (Number(rating) < 1 || Number(rating) > 5) {
+    res.status(400).json({ error: "rating must be between 1 and 5" });
     return;
   }
   try {
@@ -44,17 +53,24 @@ router.post("/", async (req: Request, res: Response) => {
 
 // ---- Milestone 4: delete a review (added by Shiv) ----
 
-// DELETE /reviews/:id - remove a review by id
-router.delete("/:id", async (req: Request, res: Response) => {
+// DELETE /reviews/:id - remove a review by id.
+// You can only delete your own review, unless you are an admin.
+router.delete("/:id", requireAuth, async (req: Request, res: Response) => {
   try {
-    const [result]: any = await db.query(
-      "DELETE FROM reviews WHERE review_id = ?",
+    const [rows]: any = await db.query(
+      "SELECT user_id FROM reviews WHERE review_id = ?",
       [req.params.id]
     );
-    if (result.affectedRows === 0) {
+    if (rows.length === 0) {
       res.status(404).json({ error: "Review not found" });
       return;
     }
+    if (rows[0].user_id !== req.user!.userId && req.user!.role !== "admin") {
+      res.status(403).json({ error: "That review is not yours" });
+      return;
+    }
+
+    await db.query("DELETE FROM reviews WHERE review_id = ?", [req.params.id]);
     res.json({ message: "Review deleted", reviewId: Number(req.params.id) });
   } catch (err) {
     console.log("DELETE /reviews/:id failed:", err);

@@ -7,15 +7,23 @@
 import { Router, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import { db } from "../db";
+import { requireAuth, requireAdmin } from "../middleware/auth";
 
 const router = Router();
+
+// You may look at / change / delete an account if it is your own account, or
+// if you are an admin. Everybody else gets a 403.
+function isMeOrAdmin(req: Request, userId: string) {
+  return req.user!.userId === Number(userId) || req.user!.role === "admin";
+}
 
 // bcrypt "salt rounds" - how much work hashing costs. 10 is the normal value:
 // high enough to be slow for an attacker, fast enough for our API.
 const SALT_ROUNDS = 10;
 
-// GET /users - all users (we never send the password back)
-router.get("/", async (req: Request, res: Response) => {
+// GET /users - all users (we never send the password back).
+// The list of every account is admin only.
+router.get("/", requireAuth, requireAdmin, async (req: Request, res: Response) => {
   try {
     const [rows] = await db.query("SELECT user_id, name, email, phone, role FROM users");
     res.json(rows);
@@ -56,7 +64,11 @@ router.post("/", async (req: Request, res: Response) => {
 
 // GET /users/:userId/bookings - all bookings of one user, with the hotel and
 // room names joined in. Used by the My Bookings page.
-router.get("/:userId/bookings", async (req: Request, res: Response) => {
+router.get("/:userId/bookings", requireAuth, async (req: Request, res: Response) => {
+  if (!isMeOrAdmin(req, req.params.userId)) {
+    res.status(403).json({ error: "You can only see your own bookings" });
+    return;
+  }
   try {
     const [rows] = await db.query(
       `SELECT b.booking_id, b.check_in_date, b.check_out_date, b.total_price, b.status,
@@ -77,8 +89,12 @@ router.get("/:userId/bookings", async (req: Request, res: Response) => {
 // ---- Milestone 4: update / delete a user (added by Shiv) ----
 
 // PUT /users/:id - update a user's name, email and phone by id
-router.put("/:id", async (req: Request, res: Response) => {
+router.put("/:id", requireAuth, async (req: Request, res: Response) => {
   const { name, email, phone } = req.body;
+  if (!isMeOrAdmin(req, req.params.id)) {
+    res.status(403).json({ error: "You can only edit your own account" });
+    return;
+  }
   if (!name || !email) {
     res.status(400).json({ error: "name and email are required" });
     return;
@@ -110,7 +126,11 @@ router.put("/:id", async (req: Request, res: Response) => {
 });
 
 // DELETE /users/:id - remove a user by id
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete("/:id", requireAuth, async (req: Request, res: Response) => {
+  if (!isMeOrAdmin(req, req.params.id)) {
+    res.status(403).json({ error: "You can only delete your own account" });
+    return;
+  }
   try {
     const [result]: any = await db.query(
       "DELETE FROM users WHERE user_id = ?",

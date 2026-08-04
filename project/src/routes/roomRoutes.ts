@@ -3,6 +3,7 @@
 // Milestone 4 work (added by Kyle). Every query is parameterized with ?.
 import { Router, Request, Response } from "express";
 import { db } from "../db";
+import { requireAuth, requireAdmin } from "../middleware/auth";
 
 const router = Router();
 
@@ -36,9 +37,11 @@ router.get("/:id", async (req: Request, res: Response) => {
 });
 
 // ---- Milestone 4: create / update / delete a room (added by Kyle) ----
+// Milestone 5: only an admin may add, change or delete a room type, so these
+// three routes go through requireAuth + requireAdmin first.
 
 // POST /rooms - add a new room type to a hotel. Returns 201 Created.
-router.post("/", async (req: Request, res: Response) => {
+router.post("/", requireAuth, requireAdmin, async (req: Request, res: Response) => {
   const { hotelId, type, pricePerNight, maxGuests, quantityAvailable } = req.body;
 
   // all of these are NOT NULL columns, so all are required
@@ -74,7 +77,7 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 // PUT /rooms/:id - update a room type by id
-router.put("/:id", async (req: Request, res: Response) => {
+router.put("/:id", requireAuth, requireAdmin, async (req: Request, res: Response) => {
   const { type, pricePerNight, maxGuests, quantityAvailable } = req.body;
   if (!type || pricePerNight == null || maxGuests == null || quantityAvailable == null) {
     res.status(400).json({
@@ -105,7 +108,7 @@ router.put("/:id", async (req: Request, res: Response) => {
 });
 
 // DELETE /rooms/:id - remove a room type by id
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete("/:id", requireAuth, requireAdmin, async (req: Request, res: Response) => {
   try {
     const [result]: any = await db.query(
       "DELETE FROM rooms WHERE room_id = ?",
