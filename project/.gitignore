@@ -1,2 +1,11 @@
 node_modules/
 dist/
+
+# never commit the real environment file, it has our MySQL password,
+# the JWT secret and the Claude API key in it
+.env
+.env.local
+
+# misc
+*.log
+.DS_Store

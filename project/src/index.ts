@@ -3,6 +3,8 @@
 // No route logic (no SQL queries) lives here.
 
 import express from "express";
+import cors from "cors";
+import { config } from "./config";
 import hotelRoutes from "./routes/hotelRoutes";
 import roomRoutes from "./routes/roomRoutes";
 import bookingRoutes from "./routes/bookingRoutes";
@@ -10,7 +12,15 @@ import userRoutes from "./routes/userRoutes";
 import reviewRoutes from "./routes/reviewRoutes";
 
 const app = express();
-const PORT = 3001;
+
+// The React app runs on http://localhost:5173 and the API on 3001. Because the
+// ports are different the browser treats them as two different origins and
+// blocks the fetch(), so we have to allow our frontend here.
+app.use(
+  cors({
+    origin: config.frontendUrl,
+  })
+);
 
 // express.json() lets us read JSON bodies from POST/PUT requests (req.body)
 app.use(express.json());
@@ -28,6 +38,6 @@ app.use("/bookings", bookingRoutes);
 app.use("/users", userRoutes);
 app.use("/reviews", reviewRoutes);
 
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+app.listen(config.port, () => {
+  console.log(`Server running at http://localhost:${config.port}`);
 });
