@@ -1,8 +1,9 @@
 // authRoutes.ts - the login system for Milestone 5 (written by Shiv).
 //
-// Two routes live here:
+// Three routes live here:
 //   POST /auth/register  - make a new account (password is hashed with bcrypt)
 //   POST /auth/login     - check the password and give back a JWT token
+//   GET  /auth/me        - who am I? (needs a valid token)
 //
 // How the token works: after a correct login we "sign" a small piece of JSON
 // (the user id, the email and the role) with our secret from .env. The browser
@@ -14,6 +15,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { db } from "../db";
 import { config } from "../config";
+import { requireAuth } from "../middleware/auth";
 
 const router = Router();
 
@@ -128,6 +130,34 @@ router.post("/login", async (req: Request, res: Response) => {
   } catch (err) {
     console.log("POST /auth/login failed:", err);
     res.status(500).json({ error: "Login failed, please try again" });
+  }
+});
+
+// GET /auth/me - the React app calls this when it starts up. If the saved token
+// is still valid it gets the user back and stays logged in, if the token is old
+// or fake it gets a 401 and the app sends the user to the login page.
+router.get("/me", requireAuth, async (req: Request, res: Response) => {
+  try {
+    const [rows]: any = await db.query(
+      "SELECT user_id, name, email, phone, role FROM users WHERE user_id = ?",
+      [req.user!.userId]
+    );
+    if (rows.length === 0) {
+      // the account was deleted while the token was still valid
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+    const user = rows[0];
+    res.json({
+      userId: user.user_id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      role: user.role,
+    });
+  } catch (err) {
+    console.log("GET /auth/me failed:", err);
+    res.status(500).json({ error: "Could not load your account" });
   }
 });
 
