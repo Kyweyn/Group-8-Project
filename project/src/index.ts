@@ -5,6 +5,7 @@
 import express from "express";
 import cors from "cors";
 import { config } from "./config";
+import authRoutes from "./routes/authRoutes";
 import hotelRoutes from "./routes/hotelRoutes";
 import roomRoutes from "./routes/roomRoutes";
 import bookingRoutes from "./routes/bookingRoutes";
@@ -32,6 +33,7 @@ app.get("/", (req, res) => {
 
 // register the routes - one line per route file
 // pattern: app.use(prefix, router)
+app.use("/auth", authRoutes);
 app.use("/hotels", hotelRoutes);
 app.use("/rooms", roomRoutes);
 app.use("/bookings", bookingRoutes);
