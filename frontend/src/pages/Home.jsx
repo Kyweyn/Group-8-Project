@@ -1,18 +1,32 @@
 // Home.jsx - the first page the user sees.
-// The search box gets added here later, right now it is only the welcome text.
-import { Link } from "react-router-dom";
+// The search form here does not call the API itself, it just sends the user to
+// the /hotels page with the values in the url and that page does the fetch.
+import { useNavigate, Link } from "react-router-dom";
+import SearchForm from "../components/SearchForm.jsx";
 
 function Home() {
+  const navigate = useNavigate();
+
+  function handleSearch(values) {
+    const query = new URLSearchParams(values).toString();
+    navigate("/hotels?" + query);
+  }
+
   return (
     <div>
-      <h1>Find a hotel</h1>
-      <p>
-        Search hotels in Kitchener, Waterloo and Cambridge and book a room
-        online.
+      <div className="hero">
+        <h1>Find a room for your next trip</h1>
+        <p>
+          Hotels in Kitchener, Waterloo and Cambridge. Search by city and dates,
+          see the price before you book.
+        </p>
+      </div>
+
+      <SearchForm onSearch={handleSearch} />
+
+      <p className="small-text">
+        Or just <Link to="/hotels">look at all the hotels</Link>.
       </p>
-      <Link to="/hotels" className="button">
-        See all hotels
-      </Link>
     </div>
   );
 }

@@ -151,6 +151,99 @@ form button {
   margin-top: 15px;
 }
 
+/* ---------- home page ---------- */
+
+.hero {
+  background-color: #2b5d8a;
+  color: white;
+  padding: 30px 25px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  margin: 0 0 8px 0;
+}
+
+.hero p {
+  margin: 0;
+  font-size: 15px;
+}
+
+/* ---------- search form ---------- */
+
+.search-form {
+  background-color: white;
+  border: 1px solid #d5d9de;
+  border-radius: 5px;
+  padding: 15px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.search-field {
+  flex: 1;
+  min-width: 130px;
+}
+
+.search-field.small {
+  flex: 0 0 80px;
+  min-width: 80px;
+}
+
+.search-field label {
+  margin-top: 0;
+}
+
+/* ---------- cards (hotel list, booking list) ---------- */
+
+.card {
+  background-color: white;
+  border: 1px solid #d5d9de;
+  border-radius: 5px;
+  padding: 15px 18px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.card h3 {
+  margin: 0 0 6px 0;
+  font-size: 18px;
+}
+
+.card p {
+  margin: 3px 0;
+  font-size: 14px;
+}
+
+.card-side {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.city {
+  color: #555;
+}
+
+.stars {
+  color: #e0a800;
+}
+
+.grey {
+  color: #777;
+  font-size: 13px;
+}
+
+.price {
+  color: #333;
+}
+
 /* ---------- messages (errors and success) ---------- */
 
 .message {
