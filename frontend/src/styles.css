@@ -166,6 +166,11 @@ form button {
   color: #8f2b2b;
 }
 
+.loading {
+  color: #666;
+  font-style: italic;
+}
+
 .message.ok {
   background-color: #eaf6ec;
   border: 1px solid #b2d6ba;
