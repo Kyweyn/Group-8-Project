@@ -244,6 +244,21 @@ form button {
   color: #333;
 }
 
+/* ---------- reviews ---------- */
+
+.review {
+  background-color: white;
+  border: 1px solid #d5d9de;
+  border-radius: 5px;
+  padding: 12px 15px;
+  margin-bottom: 10px;
+}
+
+.review p {
+  margin: 3px 0;
+  font-size: 14px;
+}
+
 /* ---------- messages (errors and success) ---------- */
 
 .message {
