@@ -7,16 +7,29 @@ import { requireAuth } from "../middleware/auth";
 
 const router = Router();
 
-// GET /reviews - all reviews together with the user name and hotel name
+// GET /reviews             - all reviews together with the user name and hotel name
+// GET /reviews?hotelId=1   - only the reviews of one hotel (used by the hotel page)
 router.get("/", async (req: Request, res: Response) => {
   try {
-    const [rows] = await db.query(
-      `SELECT rv.review_id, rv.rating, rv.comment, rv.date,
-              u.name AS user_name, h.name AS hotel_name
-       FROM reviews rv
-       JOIN users u  ON u.user_id  = rv.user_id
-       JOIN hotels h ON h.hotel_id = rv.hotel_id`
-    );
+    const { hotelId } = req.query;
+
+    // We build the SQL in two pieces instead of putting the id straight into
+    // the string. The value still goes in as a ? parameter, so this is not
+    // string concatenation with user input and it cannot be injected.
+    let sql = `SELECT rv.review_id, rv.hotel_id, rv.rating, rv.comment, rv.date,
+                      u.name AS user_name, h.name AS hotel_name
+               FROM reviews rv
+               JOIN users u  ON u.user_id  = rv.user_id
+               JOIN hotels h ON h.hotel_id = rv.hotel_id`;
+    const values: any[] = [];
+
+    if (hotelId) {
+      sql += " WHERE rv.hotel_id = ?";
+      values.push(hotelId);
+    }
+    sql += " ORDER BY rv.date DESC";
+
+    const [rows] = await db.query(sql, values);
     res.json(rows);
   } catch (err) {
     console.log("GET /reviews failed:", err);
