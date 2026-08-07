@@ -29,6 +29,8 @@ function Navbar() {
         {auth.isLoggedIn ? (
           <>
             <Link to="/my-bookings">My Bookings</Link>
+            {/* only the admin account sees the manage link */}
+            {auth.isAdmin && <Link to="/manage/hotels">Manage</Link>}
             <span className="nav-user">Hi {auth.user.name}</span>
             <button className="link-button" onClick={handleLogout}>
               Logout

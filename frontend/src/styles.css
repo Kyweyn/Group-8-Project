@@ -289,6 +289,47 @@ form button {
   color: #2b5d8a;
 }
 
+/* ---------- admin tables ---------- */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border: 1px solid #d5d9de;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 9px 12px;
+  border-bottom: 1px solid #e6e9ec;
+}
+
+.table th {
+  background-color: #eef1f4;
+  font-size: 13px;
+}
+
+.table td.right {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.form-box.wide {
+  max-width: 100%;
+  margin: 15px 0;
+}
+
+.button.grey {
+  background-color: #7a848d;
+}
+
+.button.grey:hover {
+  background-color: #667079;
+}
+
 /* ---------- booking status badge ---------- */
 
 .status {

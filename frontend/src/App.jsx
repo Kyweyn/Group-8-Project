@@ -11,6 +11,8 @@ import HotelDetails from "./pages/HotelDetails.jsx";
 import BookRoom from "./pages/BookRoom.jsx";
 import MyBookings from "./pages/MyBookings.jsx";
 import EditBooking from "./pages/EditBooking.jsx";
+import ManageHotels from "./pages/ManageHotels.jsx";
+import ManageRooms from "./pages/ManageRooms.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import NotFound from "./pages/NotFound.jsx";
@@ -54,6 +56,24 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            {/* admin only - a normal user gets a message instead of the page */}
+            <Route
+              path="/manage/hotels"
+              element={
+                <ProtectedRoute adminOnly>
+                  <ManageHotels />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/manage/hotels/:hotelId/rooms"
+              element={
+                <ProtectedRoute adminOnly>
+                  <ManageRooms />
+                </ProtectedRoute>
+              }
+            />
+
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="*" element={<NotFound />} />
