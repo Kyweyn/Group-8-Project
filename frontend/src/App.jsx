@@ -10,6 +10,7 @@ import Hotels from "./pages/Hotels.jsx";
 import HotelDetails from "./pages/HotelDetails.jsx";
 import BookRoom from "./pages/BookRoom.jsx";
 import MyBookings from "./pages/MyBookings.jsx";
+import EditBooking from "./pages/EditBooking.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import NotFound from "./pages/NotFound.jsx";
@@ -42,6 +43,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <MyBookings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/bookings/:id/edit"
+              element={
+                <ProtectedRoute>
+                  <EditBooking />
                 </ProtectedRoute>
               }
             />

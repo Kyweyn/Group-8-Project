@@ -289,6 +289,27 @@ form button {
   color: #2b5d8a;
 }
 
+/* ---------- booking status badge ---------- */
+
+.status {
+  display: inline-block;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: capitalize;
+  margin-top: 5px;
+}
+
+.status.confirmed {
+  background-color: #dff0e0;
+  color: #2c6b38;
+}
+
+.status.cancelled {
+  background-color: #e4e6e8;
+  color: #666;
+}
+
 /* ---------- reviews ---------- */
 
 .review {
