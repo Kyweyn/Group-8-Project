@@ -8,6 +8,7 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import Home from "./pages/Home.jsx";
 import Hotels from "./pages/Hotels.jsx";
 import HotelDetails from "./pages/HotelDetails.jsx";
+import BookRoom from "./pages/BookRoom.jsx";
 import MyBookings from "./pages/MyBookings.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
@@ -28,6 +29,14 @@ function App() {
             <Route path="/hotels" element={<Hotels />} />
             <Route path="/hotels/:id" element={<HotelDetails />} />
             {/* pages below need a login - ProtectedRoute sends you to /login */}
+            <Route
+              path="/book/:roomId"
+              element={
+                <ProtectedRoute>
+                  <BookRoom />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/my-bookings"
               element={

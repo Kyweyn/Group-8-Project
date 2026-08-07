@@ -244,6 +244,51 @@ form button {
   color: #333;
 }
 
+/* ---------- booking page (form on the left, summary on the right) ---------- */
+
+.two-columns {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.two-columns .form-box {
+  flex: 2;
+  margin: 0;
+  min-width: 280px;
+}
+
+.summary {
+  flex: 1;
+  min-width: 220px;
+  background-color: white;
+  border: 1px solid #d5d9de;
+  border-radius: 5px;
+  padding: 15px 18px;
+}
+
+.summary h3 {
+  margin-top: 0;
+}
+
+.summary p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.summary hr {
+  border: none;
+  border-top: 1px solid #e2e5e9;
+  margin: 10px 0;
+}
+
+.total {
+  font-size: 17px;
+  font-weight: bold;
+  color: #2b5d8a;
+}
+
 /* ---------- reviews ---------- */
 
 .review {
