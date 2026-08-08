@@ -3,6 +3,7 @@
 // the /hotels page with the values in the url and that page does the fetch.
 import { useNavigate, Link } from "react-router-dom";
 import SearchForm from "../components/SearchForm.jsx";
+import AiHelper from "../components/AiHelper.jsx";
 
 function Home() {
   const navigate = useNavigate();
@@ -27,6 +28,8 @@ function Home() {
       <p className="small-text">
         Or just <Link to="/hotels">look at all the hotels</Link>.
       </p>
+
+      <AiHelper />
     </div>
   );
 }

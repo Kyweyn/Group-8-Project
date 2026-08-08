@@ -289,6 +289,66 @@ form button {
   color: #2b5d8a;
 }
 
+/* ---------- AI helper box ---------- */
+
+.ai-box {
+  background-color: #f0f4f8;
+  border: 1px dashed #9db4c7;
+  border-radius: 6px;
+  padding: 18px 20px;
+  margin-top: 25px;
+}
+
+.ai-box h2 {
+  margin-top: 0;
+  font-size: 20px;
+}
+
+.ai-box form {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.ai-box form button {
+  margin-top: 0;
+  white-space: nowrap;
+}
+
+.examples {
+  margin-top: 10px;
+}
+
+.example-chip {
+  background-color: white;
+  border: 1px solid #b9c8d4;
+  border-radius: 14px;
+  padding: 4px 11px;
+  font-size: 12px;
+  margin: 4px 5px 0 0;
+  cursor: pointer;
+  color: #2b5d8a;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.example-chip:hover {
+  background-color: #e6edf3;
+}
+
+.ai-answer {
+  background-color: white;
+  border-left: 4px solid #2b5d8a;
+  padding: 10px 14px;
+  margin-top: 12px;
+  border-radius: 3px;
+}
+
+.ai-answer p {
+  margin: 6px 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
 /* ---------- admin tables ---------- */
 
 .table {
