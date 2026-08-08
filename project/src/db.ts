@@ -13,6 +13,7 @@ import { config } from "./config";
 // an API than opening a brand new connection for every request.
 const pool = mysql.createPool({
   host: config.dbHost,
+  port: config.dbPort,
   user: config.dbUser,
   password: config.dbPassword,
   database: config.dbName,

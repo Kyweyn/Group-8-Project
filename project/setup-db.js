@@ -5,16 +5,29 @@
 const mysql = require("mysql2/promise");
 const bcrypt = require("bcryptjs");
 
+// read the same .env file the server uses, so the password is only in one place
+require("dotenv").config();
+
 async function main() {
   // connect WITHOUT selecting a database first so we can create it
   const conn = await mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "Edgeis10", // change this to your own MySQL password
+    host: process.env.DB_HOST || "localhost",
+    port: Number(process.env.DB_PORT) || 3306,
+    user: process.env.DB_USER || "root",
+    password: process.env.DB_PASSWORD || "",
+    multipleStatements: false,
   });
 
-  await conn.query("CREATE DATABASE IF NOT EXISTS hotel_booking");
-  await conn.query("USE hotel_booking");
+  // A database name cannot be a ? parameter in SQL, so we check it ourselves
+  // and only allow letters, numbers and underscores. It comes from our own
+  // .env file, but this way a typo cannot turn into a broken query.
+  const dbName = process.env.DB_NAME || "hotel_booking";
+  if (!/^[A-Za-z0-9_]+$/.test(dbName)) {
+    throw new Error("DB_NAME may only contain letters, numbers and _");
+  }
+
+  await conn.query("CREATE DATABASE IF NOT EXISTS " + dbName);
+  await conn.query("USE " + dbName);
 
   // ---- tables ----
   await conn.query(`
@@ -135,7 +148,7 @@ async function main() {
     );
   }
 
-  console.log("Database 'hotel_booking' is ready with all tables and sample data.");
+  console.log("Database '" + dbName + "' is ready with all tables and sample data.");
   console.log("Demo logins:  admin@example.com / Admin123   (admin)");
   console.log("              shiv@example.com  / Password123 (normal user)");
   await conn.end();
