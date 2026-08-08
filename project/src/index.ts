@@ -11,6 +11,7 @@ import roomRoutes from "./routes/roomRoutes";
 import bookingRoutes from "./routes/bookingRoutes";
 import userRoutes from "./routes/userRoutes";
 import reviewRoutes from "./routes/reviewRoutes";
+import aiRoutes from "./routes/aiRoutes";
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.use("/rooms", roomRoutes);
 app.use("/bookings", bookingRoutes);
 app.use("/users", userRoutes);
 app.use("/reviews", reviewRoutes);
+app.use("/ai", aiRoutes);
 
 app.listen(config.port, () => {
   console.log(`Server running at http://localhost:${config.port}`);
