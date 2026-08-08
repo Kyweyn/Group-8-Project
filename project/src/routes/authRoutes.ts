@@ -26,6 +26,13 @@ function looksLikeEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
+// Input sanitizing: we cut the spaces off and make sure the value really is a
+// string. Someone could send "email": { "x": 1 } and mysql2 would then build a
+// weird query, so we force everything to text first.
+function clean(value: any) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
 // makes the token. We only put non secret things inside it, because anyone can
 // read (base64 decode) a JWT - they just cannot change it.
 function createToken(user: { user_id: number; email: string; role: string }) {
@@ -38,18 +45,33 @@ function createToken(user: { user_id: number; email: string; role: string }) {
 
 // POST /auth/register - create a new account and log the user in right away
 router.post("/register", async (req: Request, res: Response) => {
-  const { name, email, password, phone } = req.body;
+  const name = clean(req.body.name);
+  // emails are saved in lower case, otherwise Shiv@x.com and shiv@x.com would
+  // be two different accounts
+  const email = clean(req.body.email).toLowerCase();
+  const phone = clean(req.body.phone);
+  const password = typeof req.body.password === "string" ? req.body.password : "";
 
   if (!name || !email || !password) {
     res.status(400).json({ error: "name, email and password are required" });
     return;
   }
-  if (!looksLikeEmail(String(email))) {
+  if (name.length > 100) {
+    res.status(400).json({ error: "That name is too long" });
+    return;
+  }
+  if (!looksLikeEmail(email)) {
     res.status(400).json({ error: "That email address is not valid" });
     return;
   }
-  if (String(password).length < 8) {
+  if (password.length < 8) {
     res.status(400).json({ error: "Password must be at least 8 characters" });
+    return;
+  }
+  // bcrypt only looks at the first 72 bytes anyway, and a huge password would
+  // just make the server work for nothing
+  if (password.length > 72) {
+    res.status(400).json({ error: "Password can be at most 72 characters" });
     return;
   }
 
@@ -86,7 +108,8 @@ router.post("/register", async (req: Request, res: Response) => {
 
 // POST /auth/login - check email + password, send back a token
 router.post("/login", async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const email = clean(req.body.email).toLowerCase();
+  const password = typeof req.body.password === "string" ? req.body.password : "";
 
   if (!email || !password) {
     res.status(400).json({ error: "email and password are required" });

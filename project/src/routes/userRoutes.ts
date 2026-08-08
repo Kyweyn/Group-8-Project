@@ -36,7 +36,10 @@ router.get("/", requireAuth, requireAdmin, async (req: Request, res: Response) =
 // POST /users - create a new user.
 // The password is hashed with bcrypt first, we never store what the user typed.
 router.post("/", async (req: Request, res: Response) => {
-  const { name, email, phone, password } = req.body;
+  const { name, phone, password } = req.body;
+  // same rule as in /auth/register: trim it and keep the email in lower case
+  const email = typeof req.body.email === "string" ? req.body.email.trim().toLowerCase() : "";
+
   if (!name || !email || !password) {
     res.status(400).json({ error: "name, email and password are required" });
     return;
@@ -90,7 +93,9 @@ router.get("/:userId/bookings", requireAuth, async (req: Request, res: Response)
 
 // PUT /users/:id - update a user's name, email and phone by id
 router.put("/:id", requireAuth, async (req: Request, res: Response) => {
-  const { name, email, phone } = req.body;
+  const { name, phone } = req.body;
+  const email = typeof req.body.email === "string" ? req.body.email.trim().toLowerCase() : "";
+
   if (!isMeOrAdmin(req, req.params.id)) {
     res.status(403).json({ error: "You can only edit your own account" });
     return;
