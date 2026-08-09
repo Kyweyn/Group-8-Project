@@ -17,6 +17,12 @@ const pool = mysql.createPool({
   user: config.dbUser,
   password: config.dbPassword,
   database: config.dbName,
+  // Without this mysql2 turns a DATE column into a JavaScript Date object at
+  // midnight in the timezone of the computer. When that gets sent as JSON it
+  // becomes something like "2026-06-30T18:30:00.000Z" and the frontend showed
+  // the day BEFORE the real check in date. dateStrings keeps a DATE as the
+  // plain text "2026-07-01" that MySQL stored, so no timezone maths happens.
+  dateStrings: true,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
