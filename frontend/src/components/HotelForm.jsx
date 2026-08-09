@@ -63,7 +63,7 @@ function HotelForm({ hotel, onSave, onCancel }) {
         <button className="button" type="submit">
           {editing ? "Save changes" : "Add hotel"}
         </button>{" "}
-        <button className="button grey" type="button" onClick={onCancel}>
+        <button className="button secondary" type="button" onClick={onCancel}>
           Cancel
         </button>
       </form>

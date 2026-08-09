@@ -198,7 +198,7 @@ function ManageRooms() {
             {editingId ? "Save changes" : "Add room"}
           </button>{" "}
           {editingId && (
-            <button className="button grey" type="button" onClick={stopEdit}>
+            <button className="button secondary" type="button" onClick={stopEdit}>
               Cancel
             </button>
           )}

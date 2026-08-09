@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# the real .env is never committed, only .env.example is
+.env
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

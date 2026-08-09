@@ -382,11 +382,14 @@ form button {
   margin: 15px 0;
 }
 
-.button.grey {
+/* the second button next to a main button (Cancel).
+   NOTE: do not call this one "grey" - we already use .grey for small grey text
+   and that rule was overwriting the white text of the button. */
+.button.secondary {
   background-color: #7a848d;
 }
 
-.button.grey:hover {
+.button.secondary:hover {
   background-color: #667079;
 }
 
@@ -450,4 +453,55 @@ form button {
   background-color: #eaf6ec;
   border: 1px solid #b2d6ba;
   color: #2c6b38;
+}
+
+/* ---------- footer ---------- */
+
+.footer {
+  text-align: center;
+  color: #777;
+  font-size: 13px;
+  padding: 25px 20px;
+  border-top: 1px solid #e2e5e9;
+  margin-top: 40px;
+}
+
+.footer p {
+  margin: 3px 0;
+}
+
+/* ---------- phones ----------
+   The lab demo is on a laptop but the teacher might open it on a phone, so
+   the rows that are side by side become one under the other on a small
+   screen. 700px is where our cards start to look squashed. */
+
+@media (max-width: 700px) {
+  .navbar {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .nav-links a,
+  .nav-links .link-button,
+  .nav-user {
+    margin-left: 0;
+    margin-right: 14px;
+  }
+
+  .search-form,
+  .card,
+  .two-columns,
+  .ai-box form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .card-side {
+    text-align: left;
+  }
+
+  .table {
+    display: block;
+    overflow-x: auto;
+  }
 }
