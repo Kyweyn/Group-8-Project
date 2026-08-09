@@ -1,134 +1,120 @@
-# Hotel Booking Backend API
+# Hotel Booking - Full Stack Web Application (Group 8)
 
-Milestone 3 backend for our mini-capstone **Hotel Booking Website**. It is a REST API built with
-**TypeScript + Express + MySQL** (the `mysql2` library). No frontend, this milestone is only the API.
+Mini-capstone for Web Development / Full-Stack Programming.
 
-## Team
+A hotel booking website for the Waterloo region. A guest can search hotels by
+city and dates, look at the room types and the reviews, make an account, book a
+room, change the dates of a booking and cancel it. An admin account can add,
+edit and delete hotels and room types from inside the app. There is also a
+small AI helper that recommends hotels from our own database.
 
-- **Kyle Wayne Darjuan** - database design + project setup
-- **Shiv Alpeshbhai Patel** - hotel, room and booking routes
-- **Daiju Saji** - user and review routes + documentation
+**Team:** Kyle Wayne Darjuan, Shiv Alpeshbhai Patel, Daiju Saji
 
-## Project structure
+## What is in this repository
 
-```
-hotel-booking-backend/
-├── package.json
-├── tsconfig.json
-├── nodemon.json
-├── setup-db.js              one-time script to create the DB + sample data
-├── database/
-│   └── schema.sql           CREATE DATABASE / CREATE TABLE statements
-└── src/
-    ├── index.ts             entry point - middleware + app.use() only
-    ├── db.ts                shared MySQL connection (imported by every route)
-    └── routes/              one file per table
-        ├── hotelRoutes.ts
-        ├── roomRoutes.ts
-        ├── bookingRoutes.ts
-        ├── userRoutes.ts
-        └── reviewRoutes.ts
-```
+| Folder / file | What it is |
+|---|---|
+| [`project/`](project) | the **backend**: Express + TypeScript + MySQL REST API |
+| [`frontend/`](frontend) | the **frontend**: React 19 + Vite single page application |
+| `api/api_routes.txt` | the Milestone 2 route plan |
+| `wireframe_specs.txt` + the `*.png` files | the Figma wireframes from Milestone 2 |
+| `hotel_booking.drawio(.png)` | the database diagram |
+| `Milestone_2_Report.docx`, `Milestone_2_Slides.pptx` | earlier milestone documents |
 
-## Setup
+## Milestones
 
-1. **Install dependencies**
-   ```
-   npm install
-   ```
+| Milestone | What was added |
+|---|---|
+| 1 & 2 | idea, database design, wireframes, route plan |
+| 3 | Express + MySQL setup and all the GET routes |
+| 4 | POST / PUT / DELETE for hotels, rooms, users, bookings and reviews |
+| **5** | **React SPA, login with JWT, bcrypt password hashing, protected routes, rate limiting and the AI helper** |
 
-2. **Create the database.** Make sure MySQL is running, then either run `database/schema.sql` in
-   MySQL Workbench, **or** run the helper script:
-   ```
-   node setup-db.js
-   ```
-   Both create the `hotel_booking` database, all 5 tables, and some sample rows.
+## Technology
 
-   > If your MySQL password is not `Edgeis10`, change it in **`src/db.ts`** and **`setup-db.js`**.
+**Backend:** Node.js, TypeScript, Express 4, MySQL 8 (`mysql2`), `bcryptjs`,
+`jsonwebtoken`, `cors`, `dotenv`, `express-rate-limit`
 
-3. **Start the server**
-   ```
-   npm run dev
-   ```
-   You should see `Server running at http://localhost:3001`.
+**Frontend:** React 19, Vite, `react-router-dom`, plain CSS (no framework)
 
-## Endpoints
+**AI:** the Claude API, called from the backend so the key stays secret
 
-| Method | Route | What it does |
-|--------|-------|--------------|
-| GET    | `/hotels` | all hotels with their starting price |
-| GET    | `/hotels/search?city=&checkin=&checkout=&guests=` | hotels with a free room for the dates |
-| GET    | `/hotels/:id` | one hotel together with its rooms |
-| GET    | `/rooms` | all room types |
-| GET    | `/rooms/:id` | one room type |
-| GET    | `/bookings` | all bookings |
-| GET    | `/bookings/:id` | one booking |
-| POST   | `/bookings` | create a booking (checks availability in a transaction) |
-| PUT    | `/bookings/:id` | change the dates and recalculate the price |
-| DELETE | `/bookings/:id` | cancel a booking (sets status to `cancelled`) |
-| GET    | `/users` | all users |
-| POST   | `/users` | create a user |
-| GET    | `/users/:userId/bookings` | all bookings of one user (with hotel + room names) |
-| GET    | `/reviews` | all reviews (with user + hotel names) |
-| POST   | `/reviews` | add a review |
+## How to run it locally
 
-> Note: Milestone 2 listed the search as `/search`. We implemented it as `/hotels/search` so that
-> every route file maps to exactly one table and `index.ts` stays clean.
+You need **Node.js 18+** and a running **MySQL 8** server.
 
-## Testing without a frontend
-
-Open the URLs in your browser to test GET routes, e.g. `http://localhost:3001/hotels`.
-
-For POST / PUT / DELETE use the terminal. On **Windows PowerShell**:
-
-```powershell
-# Create a booking (returns 201 with the total price)
-Invoke-WebRequest -Method POST -Uri http://localhost:3001/bookings -ContentType "application/json" -Body '{"userId":1,"roomId":1,"checkInDate":"2026-07-10","checkOutDate":"2026-07-13"}'
-
-# Add a user
-Invoke-WebRequest -Method POST -Uri http://localhost:3001/users -ContentType "application/json" -Body '{"name":"Alex","email":"alex@example.com","password":"secret"}'
-
-# Cancel a booking
-Invoke-WebRequest -Method DELETE -Uri http://localhost:3001/bookings/1
-```
-
-On **Mac / Linux** use `curl`:
+### 1. Backend
 
 ```bash
-curl -X POST http://localhost:3001/bookings -H "Content-Type: application/json" -d '{"userId":1,"roomId":1,"checkInDate":"2026-07-10","checkOutDate":"2026-07-13"}'
+cd project
+npm install
+cp .env.example .env      # then open .env and put in your MySQL password + a JWT secret
+node setup-db.js          # creates the database, the tables and sample data
+npm run dev               # http://localhost:3001
 ```
 
-## How double booking is prevented
+### 2. Frontend (in a second terminal)
 
-`POST /bookings` runs inside a database transaction. It locks the room row, counts how many
-confirmed bookings already overlap the requested dates, and only inserts the new booking if a room
-of that type is still free. If not, it returns `409 Room not available for these dates`. This is the
-main problem we set out to solve in Milestone 2.
-<!-- 
-Project Name: HotelGo
-Group Members: Kyle Wayne Darjuan, Shriv Patel, Daiju Saji
-Project Description: A hotel booking web application that allows the users to view available rooms, price, dates and make a reservation online.
+```bash
+cd frontend
+npm install
+cp .env.example .env      # VITE_API_URL=http://localhost:3001
+npm run dev               # http://localhost:5173
+```
 
-Basic Frontend Idea:
-Login/Signup page
-View Reservation Details
-Date of check in and checkout
-Room Types
-Room Price
-Payment & Info
+Open http://localhost:5173 in the browser.
 
-Roles/tasks Breakdown:
-Kyle Wayne Darjuan
-Create a shared github repository
-Create a Jira Kanban board
-Designing and Implementing the Login/Signup
-Developing the user dashboard view to track and display the reservation details.
+> **Environment variables:** never commit a `.env` file. Both folders have a
+> `.env.example` with fake values that is committed instead, and `.env` is
+> listed in `.gitignore`. The full list of variables and what they mean is in
+> [`project/README.md`](project/README.md).
 
-Shiv Patel
-Creating the search bar filtering by date of check-in and checkout.
-Developing the frontend room listing page for hotel booking system
+### Demo accounts
 
-Daiju Saji
-basic typescript node.js project setup
-Creating a room listing page that displays the room types and room prices
--->
+| Email | Password | Role |
+|---|---|---|
+| `admin@example.com` | `Admin123` | admin - can manage hotels and rooms |
+| `shiv@example.com` | `Password123` | normal user |
+| `daiju@example.com` | `Password123` | normal user |
+
+## API endpoints
+
+The full table with request bodies and responses is in
+[`project/README.md`](project/README.md). Short version:
+
+```
+POST   /auth/register            POST   /auth/login          GET  /auth/me
+GET    /hotels                   GET    /hotels/search       GET  /hotels/:id
+POST   /hotels        (admin)    PUT    /hotels/:id (admin)  DELETE /hotels/:id (admin)
+GET    /rooms                    GET    /rooms/:id
+POST   /rooms         (admin)    PUT    /rooms/:id  (admin)  DELETE /rooms/:id  (admin)
+GET    /bookings      (admin)    GET    /bookings/:id (own)
+POST   /bookings      (login)    PUT    /bookings/:id (own)  DELETE /bookings/:id (own)
+GET    /users         (admin)    POST   /users
+GET    /users/:id/bookings (own) PUT    /users/:id (own)     DELETE /users/:id (own)
+GET    /reviews                  POST   /reviews (login)     DELETE /reviews/:id (own)
+POST   /ai/suggest    (login)
+```
+
+## Security summary
+
+- Passwords are hashed with **bcrypt** (10 salt rounds) and never stored or
+  logged in plain text
+- Login returns a **JWT** that expires after 2 hours; it is sent as
+  `Authorization: Bearer <token>` and verified on every protected route
+- The frontend `ProtectedRoute` redirects a visitor to `/login`, but the real
+  check is the `requireAuth` / `requireAdmin` middleware in the backend
+- Bookings, reviews and accounts also check that the row actually belongs to you
+- Every SQL value is a `?` parameter - no string concatenation with user input
+- The login is rate limited to 10 attempts per 15 minutes per IP
+
+## Who did what
+
+Short version, the full reflection is in the Milestone 5 Word document we hand
+in on Dropbox.
+
+| Member | Milestone 5 |
+|---|---|
+| **Kyle Wayne Darjuan** | React + Vite setup, `api.js`, `AuthContext`, Login / Register, booking form, My Bookings + Edit Booking, the AI helper component, layout and documentation |
+| **Shiv Alpeshbhai Patel** | bcrypt hashing, `/auth/register` + `/auth/login` with JWT, `ProtectedRoute`, hotel details page, the `/ai/suggest` backend route |
+| **Daiju Saji** | `.env` + config, CORS, `requireAuth` / `requireAdmin`, guards and ownership checks on every write route, hotel list page, both admin management pages, rate limiting and validation |
