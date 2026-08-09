@@ -1,0 +1,22 @@
+# ---- dependencies and build output ----
+node_modules/
+dist/
+build/
+
+# ---- environment files ----
+# NEVER commit a .env, it has our MySQL password, the JWT secret and the
+# Claude API key in it. Only .env.example (with fake values) is committed.
+.env
+.env.local
+
+# ---- editor / OS junk ----
+.DS_Store
+.vscode/
+.idea/
+*.log
+
+# ---- documents we hand in on Dropbox, not on GitHub ----
+# the assignment handout from the instructor
+REST_API_Milestones_4_5_.md
+# our own working notes for the Word document
+docs/
