@@ -7,9 +7,14 @@
 import { Router, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import { db } from "../db";
+import { checkId } from "../middleware/checkId";
 import { requireAuth, requireAdmin } from "../middleware/auth";
 
 const router = Router();
+
+// every :id in this file has to be a number, otherwise 400
+router.param("id", checkId);
+router.param("userId", checkId);
 
 // You may look at / change / delete an account if it is your own account, or
 // if you are an admin. Everybody else gets a 403.

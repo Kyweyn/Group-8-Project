@@ -3,9 +3,13 @@
 // work (added by Shiv). Every query is parameterized with ?.
 import { Router, Request, Response } from "express";
 import { db } from "../db";
+import { checkId } from "../middleware/checkId";
 import { requireAuth } from "../middleware/auth";
 
 const router = Router();
+
+// every :id in this file has to be a number, otherwise 400
+router.param("id", checkId);
 
 // GET /reviews             - all reviews together with the user name and hotel name
 // GET /reviews?hotelId=1   - only the reviews of one hotel (used by the hotel page)

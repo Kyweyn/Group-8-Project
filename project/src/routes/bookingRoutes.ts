@@ -6,9 +6,13 @@
 // trip. An admin is allowed to see and change every booking.
 import { Router, Request, Response } from "express";
 import { db } from "../db";
+import { checkId } from "../middleware/checkId";
 import { requireAuth, requireAdmin } from "../middleware/auth";
 
 const router = Router();
+
+// every :id in this file has to be a number, otherwise 400
+router.param("id", checkId);
 
 // Small helper used by the routes below. It loads the booking and decides if
 // the logged in user is allowed to touch it.

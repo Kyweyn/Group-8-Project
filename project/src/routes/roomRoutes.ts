@@ -3,9 +3,13 @@
 // Milestone 4 work (added by Kyle). Every query is parameterized with ?.
 import { Router, Request, Response } from "express";
 import { db } from "../db";
+import { checkId } from "../middleware/checkId";
 import { requireAuth, requireAdmin } from "../middleware/auth";
 
 const router = Router();
+
+// every :id in this file has to be a number, otherwise 400
+router.param("id", checkId);
 
 // GET /rooms - all room types
 router.get("/", async (req: Request, res: Response) => {

@@ -4,9 +4,13 @@
 // input can never be injected into the SQL.
 import { Router, Request, Response } from "express";
 import { db } from "../db";
+import { checkId } from "../middleware/checkId";
 import { requireAuth, requireAdmin } from "../middleware/auth";
 
 const router = Router();
+
+// every :id in this file has to be a number, otherwise 400
+router.param("id", checkId);
 
 // GET /hotels - list all hotels with their cheapest ("starting") price
 router.get("/", async (req: Request, res: Response) => {
